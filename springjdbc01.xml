@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- Annotation 기반 bean 설정 -->
+	<context:component-scan base-package="sjk.spring"/>
+	
+	<!-- 표준 JDBC API -->
+	<bean id="basicDataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
+		<property name="url" value=""/>
+		<property name="username" value="playground"/>
+		<property name="password" value="bigdata2020"/>
+	</bean>
+	
+	<!-- 대규모 JDBC API -->
+	
+	<!-- 스프링 JDBC 탬플릿 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="basicDataSource" />
+	</bean>
+
+</beans>
