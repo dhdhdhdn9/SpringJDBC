@@ -13,7 +13,7 @@ public class SungJuk {
     protected String regdate;
 
     public SungJuk() {
-	}  // mybatis 사용시 반드시 작성할 것!
+	}  // mybatis 사용시 반드시 작성할 것
     
     public SungJuk(String name, int kor, int eng, int mat) {
         this.name = name;
