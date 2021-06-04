@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+
+	<insert id="insertBook" statementType="PREPARED" parameterType="sjk.spring.vo.Book">
+		insert into books (bookid, bookname, publish, price)
+		values (#{bookid}, #{bookname}, #{publish}, #{price})
+	</insert>
+	
+	<select id="selectBook" statementType="PREPARED" resultType="sjk.spring.vo.Book">
+		select * from books order by bookid asc
+	</select>
+	
+	<select id="selectOneBook" statementType="PREPARED" 
+		parameterType="String" resultType="sjk.spring.vo.Book">
+		select * from books where bookid=#{bookid}
+	</select>
+	
+	<update id="updateBook" statementType="PREPARED" parameterType="sjk.spring.vo.Book">
+		update books set bookname=#{bookname}, publish=#{publish}, price=#{price}
+		where bookid=#{bookid}
+	</update>
+	
+	<delete id="deleteBook" statementType="PREPARED" parameterType="String">
+		delete from books where bookid=#{bookid}
+	</delete>
+
+</mapper>
