@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- Annotation 기반 bean 설정 -->
+	<context:component-scan base-package="sjk.spring"/>
+	
+	<!-- 표준 JDBC API -->
+	<bean id="basicDataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		p:driverClassName="org.mariadb.jdbc.Driver"
+		p:url="jdbc:mariadb://bigdata.chasrr6acj7c.ap-northeast-2.rds.amazonaws.com:3306/playground"
+		p:username="playground"
+		p:password="bigdata2020"/>
+	
+	<!-- 대규모 JDBC API -->
+	<!-- database connection pool -->
+	<!-- 요청이 올때마다 connection 객체를 생성하는 것이 아니라 -->
+	<!-- 일정 수의 connection 객체를 미리 만들어 pool 에 저장한 후 -->
+	<!-- 요청에 따라  pool 에서 connection 객체를 가져다 쓰게 하는 방식 -->
+	<!-- 관련 라이브러리 : commons-dbcp2, commons-pool2 -->
+	<!-- commons.apache.org -->
+	
+	<!-- initialSize : 최초시점의 생성할 connection 객체 수 -->
+	<!-- maxTotal : 동시 사용 가능 connection 객체 수 -->
+	<!-- maxIdle : pool에 유지할 사용 대기 connection 객체 수 -->
+	<bean id = "dbcpDataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		p:driverClassName="org.mariadb.jdbc.Driver"
+		p:url="jdbc:mariadb://bigdata.chasrr6acj7c.ap-northeast-2.rds.amazonaws.com:3306/playground"
+		p:username="playground" p:password="bigdata2020"
+		p:initialSize="10" p:maxTotal="7"
+		p:maxIdle="3"/>
+	
+	<!-- 스프링 JDBC 탬플릿 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"		
+		p:dataSource-ref="dbcpDataSource"/>
+		<!-- p:dataSource-ref="basicDataSource" /> -->
+	
+	<!-- myBatis 설정 #1 -->
+	<!-- 프로그램에서 사용하는 SQL질의문들을 하나의 구성 파일에 작성한 후 -->
+	<!-- 간단한 이름으로 호출해서 사용하는 라이브러리 (매핑) -->
+	<!-- 프로그램 코드와 SQL 질의문의 분리로 간결성과 유지보수성이 향상 -->
+	<!-- jdbcTemplate의 mapper 없이도 간단히 List로 구성하여 출력 가능 -->
+	<!-- 관련 라이브러리 : mybatis, mybatis-spring -->
+	<!-- blog.mybatis.org -->
+	<!-- mvn repo -->
+	<!-- eclipse 플러그인: mybatipse -->
+	<bean id ="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dbcpDataSource"		
+		p:mapperLocations="classpath:mybatis3/*Mapper.xml"/>
+		<!-- p:mapperLocations="classpath:mybatis3/MemberMapper.xml" -->
+	
+	<!-- myBatis 설정 #2 -->
+	<bean id ="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" index="0"/>
+	</bean>
+
+</beans>
